@@ -8,7 +8,6 @@ function isOpper(char = "") {
 }
 
 function convert(expr = "") {
-    expr = expr.replaceAll("x", "*").replaceAll("÷", "/");
     const exprList = [];
     let hasOnlyOppers = true;
     let numStr = "";
@@ -98,7 +97,35 @@ function calc(exprList = []) {
     return exprList[0] !== Infinity ? exprList[0] : "Erro";
 }
 
+function expressionRules(char) {
+    const lastChar = expression.charAt(expression.length - 1);
+
+    if(isOpper(char) && !expression.length) {
+        return true;
+    }
+    
+    if(lastChar === "-" && char === "-" ) {
+        return true;
+    }
+
+    if(lastChar === "+" && char ==="-" ) {
+        expression = expression.slice(0, -1);
+        expression += char;
+        return true;
+    }
+
+    if(isOpper(lastChar) && isOpper(char) && char !== "-") {
+        expression = expression.slice(0, -1);
+        expression += char;
+        return true;
+    }
+}
+
 function updateExpression(command = "") {
+    if(expressionRules(command)) {
+        return;
+    }
+
     switch(command) {
         case "clear":
             expression = "";
@@ -116,7 +143,7 @@ function updateExpression(command = "") {
 
 function display(val = "") {
     updateExpression(val);
-    view_exp.textContent = expression;
+    view_exp.textContent = expression.replaceAll("*", "x").replaceAll("/", "÷");
 }
 
 btns.forEach(btn => {
